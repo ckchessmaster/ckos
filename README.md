@@ -1,2 +1,2 @@
 # ckos
-A hobby OS
+A 32-bit hobby OS
