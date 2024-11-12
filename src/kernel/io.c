@@ -5,7 +5,7 @@ extern char* framebuffer;
 extern int scanline; // Bytes per line (could be more than screen width)
 extern char _binary_font_psf_start[];
 
-const unsigned short unicodeMapSize = 95;
+const unsigned short unicodeMapSize = 95; // This constant should be updated as we add to the unicode map
 unicode_lookup_t unicodeMap[] = 
 {
     {' ', 0x0020}, {'!', 0x0021}, {'"', 0x0022}, {'#', 0x0023}, {'$', 0x0024}, {'%', 0x0025}, {'&', 0x0026}, {'\'', 0x0027}, {'(', 0x0028}, {')', 0x0029}, 
