@@ -177,8 +177,17 @@ void kernel_main(unsigned long magic, unsigned long addr)
         }
     }
 
-    putchar(0x0024, 0, 0);
-    putchar(0x0025, 1, 0);
-    putchar(250, 1, 1);
-    putchar(250, 1, 2);
+    putchar(0x0048, 0, 0);  // H
+    putchar(0x0065, 1, 0);  // e
+    putchar(0x006C, 2, 0);  // l
+    putchar(0x006C, 3, 0);  // l
+    putchar(0x006F, 4, 0);  // o
+    putchar(0x0020, 5, 0);  // -space-
+    putchar(0x0057, 6, 0);  // W
+    putchar(0x006F, 7, 0);  // o
+    putchar(0x0072, 8, 0);  // r
+    putchar(0x006C, 9, 0);  // l
+    putchar(0x0064, 10, 0); // d
+
+
 }
