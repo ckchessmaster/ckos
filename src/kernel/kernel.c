@@ -10,8 +10,7 @@ int scanline;
 
 void kernel_main(unsigned long magic, unsigned long addr)
 {
-    char* test = "Hello World!\n";
-    debugString(test);
+    debugString("Hello World!\n");
 
     // Verify multiboot2-compliant boot loader
     if (magic != MULTIBOOT2_BOOTLOADER_MAGIC)
