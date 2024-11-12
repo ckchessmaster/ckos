@@ -11,19 +11,19 @@ int scanline;
 void kernel_main(unsigned long magic, unsigned long addr)
 {
     char test[] = "Hello World!\n";
-    debugString(test, sizeof(test) / sizeof(test[0]));
+    debugString(test);
 
     // Verify multiboot2-compliant boot loader
     if (magic != MULTIBOOT2_BOOTLOADER_MAGIC)
     {
-        debugString("xxx", 3);
+        debugString("Invalid magic number detected!");
         return;
     }
 
     // Verify alignment
     if (addr & 7)
     {
-        debugString("yyy", 3);
+        debugString("Invalid header alignment detected!");
         return;
     }
 
@@ -37,26 +37,15 @@ void kernel_main(unsigned long magic, unsigned long addr)
     {
         switch (tag->type)
         {
-        case MULTIBOOT_TAG_TYPE_FRAMEBUFFER:
-        {
-            multiboot_tag_framebuffer_t *tagfb = (multiboot_tag_framebuffer_t *)tag;
-            framebuffer = (char *)tagfb->framebuffer_addr;
-            scanline = tagfb->framebuffer_pitch;
-        }
-        break;
+            case MULTIBOOT_TAG_TYPE_FRAMEBUFFER:
+            {
+                multiboot_tag_framebuffer_t *tagfb = (multiboot_tag_framebuffer_t *)tag;
+                framebuffer = (char *)tagfb->framebuffer_addr;
+                scanline = tagfb->framebuffer_pitch;
+            }
+            break;
         }
     }
 
-    putchar(getUnicodeValueFromChar('H'), 0, 0);
-    putchar(getUnicodeValueFromChar('e'), 1, 0);
-    putchar(getUnicodeValueFromChar('l'), 2, 0);
-    putchar(getUnicodeValueFromChar('l'), 3, 0);
-    putchar(getUnicodeValueFromChar('o'), 4, 0);
-    putchar(getUnicodeValueFromChar(' '), 5, 0);
-    putchar(getUnicodeValueFromChar('W'), 6, 0);
-    putchar(getUnicodeValueFromChar('o'), 7, 0);
-    putchar(getUnicodeValueFromChar('r'), 8, 0);
-    putchar(getUnicodeValueFromChar('l'), 9, 0);
-    putchar(getUnicodeValueFromChar('d'), 10, 0);
-    putchar(getUnicodeValueFromChar('!'), 11, 0);
+    printk("Hello World!");
 }

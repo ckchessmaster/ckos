@@ -8,7 +8,8 @@ typedef struct unicode_lookup
     unsigned short int value;
 } unicode_lookup_t;
 
-void debugChar(char value);
-void debugString(char value[], int size);
+void debugChar(char c);
+void debugString(char* s);
 void putchar(unsigned short int c, int cursorX, int cursorY);
 unsigned short int getUnicodeValueFromChar(char c);
+void printk(char* s);

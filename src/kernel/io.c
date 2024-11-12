@@ -23,17 +23,17 @@ unicode_lookup_t unicodeMap[] =
 };
 
 // Output a char to the qemu debugcon
-void debugChar(char value)
+void debugChar(char c)
 {
-    __asm__ volatile("outb %b0, %w1" : : "a"(value), "Nd"(DEBUG_PORT) : "memory");
+    __asm__ volatile("outb %b0, %w1" : : "a"(c), "Nd"(DEBUG_PORT) : "memory");
 }
 
 // Output a string to the qemu debugcon
-void debugString(char value[], int size)
+void debugString(char* s)
 {
-    for (int i=0; i<size; i++)
+    for (char* c=s; *c != '\0'; c++)
     {
-        debugChar(value[i]);
+        debugChar(*c);
     }
 }
 
@@ -86,4 +86,14 @@ unsigned short int getUnicodeValueFromChar(char c)
     }
 
     return value;
+}
+
+void printk(char* s)
+{
+    unsigned short int cursor = 0;
+    for (char* c=s; *c != '\0'; c++)
+    {
+        putchar(getUnicodeValueFromChar(*c), cursor, 0);
+        cursor++;
+    }
 }
