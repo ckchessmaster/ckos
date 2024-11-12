@@ -188,6 +188,5 @@ void kernel_main(unsigned long magic, unsigned long addr)
     putchar(0x0072, 8, 0);  // r
     putchar(0x006C, 9, 0);  // l
     putchar(0x0064, 10, 0); // d
-
-
+    putchar(0x0021, 10, 0); // !
 }
