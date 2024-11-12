@@ -1,3 +1,10 @@
+# Custom
+bin/*
+build/*
+iso/*
+*.iso
+*.log
+
 # Prerequisites
 *.d
 
