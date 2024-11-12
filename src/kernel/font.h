@@ -1,3 +1,6 @@
+#ifndef _FONT_H_
+#define _FONT_H_
+
 #include <stddef.h>
 #include <stdint.h>
 
@@ -22,3 +25,4 @@ typedef struct PSF2_Font {
     uint32_t height;
     uint32_t width;
 } PSF2_Font_t;
+#endif

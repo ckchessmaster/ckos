@@ -1,3 +1,6 @@
+#ifndef _MULTIBOOT2_H_
+#define _MULTIBOOT2_H_
+
 #include <stdint.h>
 
 /*  This should be in %eax. */
@@ -54,3 +57,4 @@ typedef struct multiboot_tag_framebuffer
         };
     };
 } multiboot_tag_framebuffer_t;
+#endif
