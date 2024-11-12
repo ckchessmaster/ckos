@@ -3,6 +3,7 @@
 #include <stdint.h>
 
 #include "multiboot2.h"
+#include "io.c"
 
 void debug(uint8_t value)
 {
@@ -94,6 +95,9 @@ void debug_num(unsigned int num)
     }
 }
 
+char* framebuffer;
+int scanline;
+
 void kernel_main(unsigned long magic, unsigned long addr)
 {
     char test[] = "Hello World!\n";
@@ -114,9 +118,9 @@ void kernel_main(unsigned long magic, unsigned long addr)
     multiboot_tag_t *tag;
     unsigned size;
 
-    #define red   0xFF0000
-    #define green 0x00FF00
-    #define blue  0x0000FF
+#define red 0xFF0000
+#define green 0x00FF00
+#define blue 0x0000FF
 
     size = *(unsigned *)addr;
     for (tag = (multiboot_tag_t *)(addr + 8);
@@ -133,7 +137,9 @@ void kernel_main(unsigned long magic, unsigned long addr)
             unsigned int color;
             unsigned i;
             multiboot_tag_framebuffer_t *tagfb = (multiboot_tag_framebuffer_t *)tag;
-            void *fb = (void *)(unsigned long)tagfb->framebuffer_addr;
+            void* fb = (void*)(unsigned long)tagfb->framebuffer_addr;
+            framebuffer = (char*)tagfb->framebuffer_addr;
+            scanline = tagfb->framebuffer_pitch;
 
             debug('(');
             debug_num(tagfb->framebuffer_type);
@@ -157,7 +163,7 @@ void kernel_main(unsigned long magic, unsigned long addr)
                 {
                 case 32:
                 {
-                    uint32_t* pixel = fb + tagfb->framebuffer_pitch * i + 4 * i;
+                    uint32_t *pixel = fb + tagfb->framebuffer_pitch * i + 4 * i;
                     *pixel = color;
                 }
                 break;
@@ -170,4 +176,9 @@ void kernel_main(unsigned long magic, unsigned long addr)
         break;
         }
     }
+
+    putchar(0x0024, 0, 0);
+    putchar(0x0025, 1, 0);
+    putchar(250, 1, 1);
+    putchar(250, 1, 2);
 }
