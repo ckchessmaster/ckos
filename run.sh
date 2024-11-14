@@ -1,9 +1,9 @@
 #!/bin/bash
 
-./build.sh
+make all
 qemu-system-x86_64 \
     -m 128 \
     -no-reboot \
-    -cdrom ckos.iso \
+    -cdrom build/release/ckos.iso \
     -nographic \
     -debugcon file:ckos.log
