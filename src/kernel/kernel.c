@@ -27,9 +27,6 @@ void kernel_main(unsigned long magic, unsigned long addr)
     }
 
     multiboot_tag_t *tag;
-    unsigned size;
-
-    size = *(unsigned *)addr;
     for (tag = (multiboot_tag_t *)(addr + 8);
          tag->type != MULTIBOOT_TAG_TYPE_END;
          tag = (multiboot_tag_t *)((uint8_t *)tag + ((tag->size + 7) & ~7)))
