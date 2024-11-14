@@ -5,8 +5,10 @@
 #include "multiboot2.h"
 #include "io.h"
 
-char *framebuffer;
-int scanline;
+uint64_t framebuffer;
+unsigned int scanline;
+
+void kernel_main(unsigned long magic, unsigned long addr);
 
 void kernel_main(unsigned long magic, unsigned long addr)
 {
@@ -29,14 +31,14 @@ void kernel_main(unsigned long magic, unsigned long addr)
     multiboot_tag_t *tag;
     for (tag = (multiboot_tag_t *)(addr + 8);
          tag->type != MULTIBOOT_TAG_TYPE_END;
-         tag = (multiboot_tag_t *)((uint8_t *)tag + ((tag->size + 7) & ~7)))
+         tag = (multiboot_tag_t *)((uint8_t *)tag + ((tag->size + 7) & 4294967288)))
     {
         switch (tag->type)
         {
             case MULTIBOOT_TAG_TYPE_FRAMEBUFFER:
             {
                 multiboot_tag_framebuffer_t *tagfb = (multiboot_tag_framebuffer_t *)tag;
-                framebuffer = (char *)tagfb->framebuffer_addr;
+                framebuffer = tagfb->framebuffer_addr;
                 scanline = tagfb->framebuffer_pitch;
             }
             break;

@@ -11,10 +11,10 @@ typedef struct unicode_lookup
     unsigned short int value;
 } unicode_lookup_t;
 
-void debugChar(char c);
-void debugString(char* s);
-void putchar(unsigned short int c, int cursorX, int cursorY);
+void debugChar(const char c);
+void debugString(const char* s);
+void putchar(unsigned short int c, unsigned int cursorX, unsigned int cursorY);
 unsigned short int getUnicodeValueFromChar(char c);
-void printk(char* s);
+void printk(const char* s);
 
 #endif

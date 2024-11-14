@@ -2,7 +2,7 @@
 #include "font.h"
 
 extern char* framebuffer;
-extern int scanline; // Bytes per line (could be more than screen width)
+extern unsigned int scanline; // Bytes per line (could be more than screen width)
 extern char _binary_font_psf_start[];
 
 const unsigned short unicodeMapSize = 95; // This constant should be updated as we add to the unicode map
@@ -23,15 +23,15 @@ unicode_lookup_t unicodeMap[] =
 };
 
 // Output a char to the qemu debugcon
-void debugChar(char c)
+void debugChar(const char c)
 {
     __asm__ volatile("outb %b0, %w1" : : "a"(c), "Nd"(DEBUG_PORT) : "memory");
 }
 
 // Output a string to the qemu debugcon
-void debugString(char* s)
+void debugString(const char* s)
 {
-    for (char* c=s; *c != '\0'; c++)
+    for (const char* c=s; *c != '\0'; c++)
     {
         debugChar(*c);
     }
@@ -39,22 +39,22 @@ void debugString(char* s)
 
 void putchar(
     unsigned short int c, // This is an int not a char since it's a unicode character
-    int cursorX,
-    int cursorY)
+    unsigned int cursorX,
+    unsigned int cursorY)
 {
     // cast the address to PSF header struct
     PSF2_Font_t *font = (PSF2_Font_t*)&_binary_font_psf_start;
 
-    int bytesPerLine = (font->width + 7) / 8;
+    unsigned int bytesPerLine = (font->width + 7) / 8;
 
     // Get the glyph for the given character. If there's no glyph we'll display the first glyph.
     unsigned char* glyph = (unsigned char*)&_binary_font_psf_start + font->headerSize + (c > 0 && c < font->numGlyphs ? c : 0) * font->bytesPerGlyph;
 
     // Calculate the upper left corner of the screen.
-    int offset = (cursorY * font->height * scanline) + (cursorX * (font->width + 1) * sizeof(PIXEL));
+    unsigned int offset = (cursorY * font->height * scanline) + (cursorX * (font->width + 1) * sizeof(PIXEL));
 
     // Display pixels according to the bitmap
-    int x,y,line,mask;
+    unsigned int x,y,line,mask;
     for (y=0; y<font->height; y++)
     {
         line = offset;
@@ -88,10 +88,10 @@ unsigned short int getUnicodeValueFromChar(char c)
     return value;
 }
 
-void printk(char* s)
+void printk(const char* s)
 {
     unsigned short int cursor = 0;
-    for (char* c=s; *c != '\0'; c++)
+    for (const char* c=s; *c != '\0'; c++)
     {
         putchar(getUnicodeValueFromChar(*c), cursor, 0);
         cursor++;

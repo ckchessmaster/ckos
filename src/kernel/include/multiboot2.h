@@ -44,7 +44,7 @@ typedef struct multiboot_tag_framebuffer
         struct
         {
             uint16_t framebuffer_pallete_num_colors;
-            multiboot_multiboot_tag_framebuffer_palette_t framebuffer_pallete[0];
+            multiboot_multiboot_tag_framebuffer_palette_t framebuffer_pallete[];
         };
         struct
         {
