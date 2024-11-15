@@ -5,6 +5,10 @@
 #include "multiboot2.h"
 #include "io.h"
 
+extern void loadPageDirectory(unsigned int*);
+extern void enablePaging();
+extern unsigned int* page_directory;
+
 uint64_t framebuffer;
 unsigned int scanline;
 
@@ -13,6 +17,8 @@ void kernel_main(unsigned long magic, unsigned long addr);
 void kernel_main(unsigned long magic, unsigned long addr)
 {
     debugString("Hello World!\n");
+    loadPageDirectory(page_directory);
+    enablePaging();
 
     // Verify multiboot2-compliant boot loader
     if (magic != MULTIBOOT2_BOOTLOADER_MAGIC)
