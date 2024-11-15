@@ -1,6 +1,6 @@
 # Declare constants for the multiboot header.
-.set MAGIC,    		0xe85250d6               	# 'magic number' lets bootloader find the header (Note: This is the multiboot2 number v1 is 0x1BADB002)
-.set ARCH,	   		0						 	# architecture, 0=x86, 4=M
+.set MAGIC,			0xe85250d6               	# 'magic number' lets bootloader find the header (Note: This is the multiboot2 number v1 is 0x1BADB002)
+.set ARCH,			0						 	# architecture, 0=x86, 4=M
 .set HEADER_LENGTH, header_end - header_start	# header length in bytes
 .set CHECKSUM, 		0x100000000 - (MAGIC + ARCH + HEADER_LENGTH)  			# checksum
 
@@ -38,11 +38,6 @@ stack_bottom:
 .skip 16384 # 16 KiB
 stack_top:
 
-.align 4
-.global page_directory
-page_directory:
-	.skip 4
-
 /* Kernel entrypoint */
 .section .text
 .global _start
@@ -60,29 +55,6 @@ _start:
 	cli 	/* Disable interrupts */
 1:	hlt 	/* Wait for the next interrupt to arrive */
 	jmp 1b 	/* Loop to hlt */
-
-.text
-.global loadPageDirectory
-loadPageDirectory:
-	push %ebp
-	mov %esp, %ebp
-	mov 8(%esp), %eax
-	mov %eax, %cr3
-	mov %ebp, %esp
-	pop %ebp
-	ret
-
-.text
-.global enablePaging
-enablePaging:
-	push %ebp
-	mov %eax, page_directory
-	mov %cr3, %eax
-	mov %eax, %cr0
-	or %eax, 0x80000001
-	mov %cr0, %eax
-	pop %ebp
-	ret	
 
 /*
 Set the size of the _start symbol to the current location '.' minus its start.

@@ -15,19 +15,18 @@ OBJ     := $(BUILD)/obj
 TST		:= $(BUILD)/test
 INCLUDES:= $(wildcard $(SRC)/**/include)
 BIN     := $(BUILD)/bin
-KERNEL  := $(BIN)/kernel.bin
 ISO		:= $(BUILD)/iso
 RELEASE := $(BUILD)/release/ckos.iso
 
-SRCS    := $(wildcard $(SRC)/**/*.c) $(wildcard $(SRC)/**/*.S)
+SRCS    := $(wildcard $(SRC)/**/*.S)
+SRCS    := $(wildcard $(SRC)/**/*.S)
 OBJS    := $(patsubst $(SRC)/%.c, $(OBJ)/%.o, $(SRCS))
-OBJS    := $(patsubst $(SRC)/%.S, $(OBJ)/%.o, $(OBJS))
 OBJS	:= $(OBJS) $(OBJ)/external/font.o
-
-DEPS	:= $(patsubst $(SRC)/%.c, $(OBJ)/%.d, $(SRCS))
-DEPS	:= $(patsubst $(SRC)/%.S, $(OBJ)/%.d, $(DEPS))
+OBJS	:= $(OBJS) $(patsubst $(SRC)/%.S, $(OBJ)/%.o, $(SRCS))
 
 HEADERS	:= $(foreach incl, $(INCLUDES), $(wildcard $(incl)/*.h))
+DEPS	:= $(patsubst $(SRC)/%.c, $(OBJ)/%.d, $(SRCS))
+KERNEL  := $(BIN)/kernel.bin
 ALLFILES:= $(SRCS) $(HEADERS)
 
 -include $(DEPS)
@@ -39,7 +38,6 @@ all: setup $(RELEASE)
 debug:
 	@echo $(OBJS)
 	@echo $(SRCS)
-	@echo $(DEPS)
 
 setup:
 	@mkdir -p build/obj/kernel
@@ -69,13 +67,14 @@ $(KERNEL): $(OBJS)
 $(OBJ)/%.o: $(SRC)/%.c Makefile
 	@$(CC) $(CFLAGS) $(foreach incl, $(INCLUDES), $(addprefix -I ,$(incl))) -MMD -MP -c $< -o $@
 
-$(OBJ)/%.o: $(SRC)/%.S
-	@$(AS) $< -o $@
-
 # Build special content
 $(OBJ)/external/font.o: font.psf
 	@objcopy -O elf32-i386 -B i386 -I binary $< $@
 
+$(OBJ)/kernel/boot.o: $(SRC)/kernel/boot.S
+	@$(AS) $< -o $@
+
 # Test
 $(TST)/%_t: %.c Makefile $(RELEASE)
 	@$(CC) $(CFLAGS) -MMD -MP -DTEST $< $(RELEASE) -o $@
+
