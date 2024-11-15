@@ -1,9 +1,10 @@
-#include "io.h"
-#include "font.h"
+#include "terminal.h"
 
 extern char* framebuffer;
 extern unsigned int scanline; // Bytes per line (could be more than screen width)
 extern char _binary_font_psf_start[];
+extern unsigned int screenHeight;
+extern unsigned int screenWidth;
 
 const unsigned short unicodeMapSize = 95; // This constant should be updated as we add to the unicode map
 unicode_lookup_t unicodeMap[] = 
@@ -22,25 +23,13 @@ unicode_lookup_t unicodeMap[] =
     {'z', 0x007A}, {'{', 0x007B}, {'|', 0x007C}, {'}', 0x007D}, {'~', 0x007E}
 };
 
-// Output a char to the qemu debugcon
-void debugChar(const char c)
-{
-    __asm__ volatile("outb %b0, %w1" : : "a"(c), "Nd"(DEBUG_PORT) : "memory");
-}
-
-// Output a string to the qemu debugcon
-void debugString(const char* s)
-{
-    for (const char* c=s; *c != '\0'; c++)
-    {
-        debugChar(*c);
-    }
-}
+unsigned int cursorX = 0;
+unsigned int cursorY = 0;
 
 void putchar(
     unsigned short int c, // This is an int not a char since it's a unicode character
-    unsigned int cursorX,
-    unsigned int cursorY)
+    unsigned int cX,
+    unsigned int cY)
 {
     // cast the address to PSF header struct
     PSF2_Font_t *font = (PSF2_Font_t*)&_binary_font_psf_start;
@@ -51,7 +40,7 @@ void putchar(
     unsigned char* glyph = (unsigned char*)&_binary_font_psf_start + font->headerSize + (c > 0 && c < font->numGlyphs ? c : 0) * font->bytesPerGlyph;
 
     // Calculate the upper left corner of the screen.
-    unsigned int offset = (cursorY * font->height * scanline) + (cursorX * (font->width + 1) * sizeof(PIXEL));
+    unsigned int offset = (cY * font->height * scanline) + (cX * (font->width + 1) * sizeof(PIXEL));
 
     // Display pixels according to the bitmap
     unsigned int x,y,line,mask;
@@ -90,10 +79,22 @@ unsigned short int getUnicodeValueFromChar(char c)
 
 void printk(const char* s)
 {
-    unsigned short int cursor = 0;
     for (const char* c=s; *c != '\0'; c++)
     {
-        putchar(getUnicodeValueFromChar(*c), cursor, 0);
-        cursor++;
+        if (*c == '\n')
+        {
+            cursorX = 0;
+            cursorY++;
+            continue;
+        }
+
+        putchar(getUnicodeValueFromChar(*c), cursorX, cursorY);
+        cursorX++;
+
+        if (cursorX >= 114)
+        {
+            cursorX = 0;
+            cursorY++;
+        }
     }
 }

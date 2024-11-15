@@ -1,8 +1,9 @@
-#ifndef _IO_H_
-#define _IO_H_
+#ifndef _TERMINAL_H_
+#define _TERMINAL_H_
+
+#include "font.h"
 
 #define PIXEL uint32_t
-#define DEBUG_PORT 0xe9
 #define UNICODE_UNKNOWN 0xFFFD
 
 typedef struct unicode_lookup
@@ -11,10 +12,12 @@ typedef struct unicode_lookup
     unsigned short int value;
 } unicode_lookup_t;
 
-void debugChar(const char c);
-void debugString(const char* s);
-void putchar(unsigned short int c, unsigned int cursorX, unsigned int cursorY);
+
 unsigned short int getUnicodeValueFromChar(char c);
+void putchar(
+    unsigned short int c, // This is an int not a char since it's a unicode character
+    unsigned int cursorX,
+    unsigned int cursorY);
 void printk(const char* s);
 
 #endif

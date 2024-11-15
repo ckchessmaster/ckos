@@ -3,7 +3,8 @@
 #include <stdint.h>
 
 #include "multiboot2.h"
-#include "io.h"
+#include "debug.h"
+#include "terminal.h"
 
 extern void loadPageDirectory(unsigned int*);
 extern void enablePaging();
@@ -11,14 +12,14 @@ extern unsigned int* page_directory;
 
 uint64_t framebuffer;
 unsigned int scanline;
+unsigned int screenHeight;
+unsigned int screenWidth;
 
 void kernel_main(unsigned long magic, unsigned long addr);
 
 void kernel_main(unsigned long magic, unsigned long addr)
 {
-    debugString("Hello World!\n");
-    loadPageDirectory(page_directory);
-    enablePaging();
+    debugString("Kernel initializing...\n");
 
     // Verify multiboot2-compliant boot loader
     if (magic != MULTIBOOT2_BOOTLOADER_MAGIC)
@@ -33,6 +34,11 @@ void kernel_main(unsigned long magic, unsigned long addr)
         debugString("Invalid header alignment detected!");
         return;
     }
+    debugString("Bootloader validated.\n");
+
+    loadPageDirectory(page_directory);
+    enablePaging();
+    debugString("Paging loaded.\n");
 
     multiboot_tag_t *tag;
     for (tag = (multiboot_tag_t *)(addr + 8);
@@ -46,10 +52,16 @@ void kernel_main(unsigned long magic, unsigned long addr)
                 multiboot_tag_framebuffer_t *tagfb = (multiboot_tag_framebuffer_t *)tag;
                 framebuffer = tagfb->framebuffer_addr;
                 scanline = tagfb->framebuffer_pitch;
+                screenHeight = tagfb->framebuffer_height;
+                screenWidth = tagfb->framebuffer_height;
             }
             break;
         }
     }
+    debugString("Display initialized.\n");
+    debugString("Kernel initialization complete!\n");
 
-    printk("Hello World!");
+    printk("Hello World!\n");
+    printk("Hello World!\n");
+    printk("Hello World!\n");
 }
