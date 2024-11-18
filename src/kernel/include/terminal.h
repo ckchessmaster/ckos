@@ -12,7 +12,11 @@ typedef struct unicode_lookup
     unsigned short int value;
 } unicode_lookup_t;
 
-
+void initTerminal(
+    uint64_t framebufferAddress, 
+    unsigned int screenHeight, 
+    unsigned int screenWidth,
+    unsigned int scanline);
 unsigned short int getUnicodeValueFromChar(char c);
 void putchar(
     unsigned short int c, // This is an int not a char since it's a unicode character

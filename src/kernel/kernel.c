@@ -56,6 +56,8 @@ void kernel_main(unsigned long magic, unsigned long addr)
                 scanline = tagfb->framebuffer_pitch;
                 screenHeight = tagfb->framebuffer_height;
                 screenWidth = tagfb->framebuffer_height;
+
+                initTerminal(framebuffer, screenHeight, screenWidth, scanline);
             }
             break;
         }
@@ -90,4 +92,9 @@ void test()
     printf("Number is: %i!\n", 4567890);
 
     printf("Number is: %d! Next number is: %d!\n", 123, 456);
+
+    for (int i=0; i<120; i++)
+    {
+        printf("X");
+    }
 }

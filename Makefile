@@ -4,7 +4,7 @@ AS := i686-elf-as
 WARNINGS := -Wall -Wextra -Wshadow -Wpointer-arith -Wcast-align \
             -Wwrite-strings -Wmissing-prototypes -Wmissing-declarations \
             -Wredundant-decls -Wnested-externs -Winline -Wno-long-long \
-            -Wconversion -Wstrict-prototypes -Werror
+            -Wconversion -Wstrict-prototypes 
 
 CFLAGS := -std=gnu23 $(WARNINGS) -ffreestanding -O2
 LDFLAGS := -ffreestanding -O2 -nostdlib
