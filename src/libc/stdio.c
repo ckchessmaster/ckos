@@ -26,6 +26,7 @@ int printf(const char *format, ...)
             {
                 char num[11];
                 memset(num, '\0', 11);
+
                 intToString(va_arg(params, int), num);
                 printStr(num);
                 skip = true;
