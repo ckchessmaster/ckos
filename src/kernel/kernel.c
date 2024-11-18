@@ -69,9 +69,9 @@ void kernel_main(unsigned long magic, unsigned long addr)
 
 void displayDiagnostics()
 {
-    printf("Welcome to CKOS!\n----------------\n");
+    printf("Welcome to CKOS!\n--------------------------------\n");
     printf("Display Info:\nH: %d W: %d L: %d", screenHeight, screenWidth, scanline);
-    printf("\n----------------\n\n");
+    printf("\n--------------------------------\n\n");
 }
 
 void test()
