@@ -28,19 +28,20 @@ int printf(const char *format, ...)
                 memset(num, '\0', 11);
 
                 intToString(va_arg(params, int), num);
-                printStr(num);
+                len += printStr(num);
                 skip = true;
             }
             break;
             case 'c':
             {
                 printChar((char)va_arg(params, int));
+                len++;
                 skip = true;
             }
             break;
             case 's':
             {
-                printStr(va_arg(params, char*));
+                len += printStr(va_arg(params, char*));
                 skip = true;
             }
             break;
