@@ -16,6 +16,8 @@ unsigned int screenHeight;
 unsigned int screenWidth;
 
 void kernel_main(unsigned long magic, unsigned long addr);
+void displayDiagnostics();
+void test();
 
 void kernel_main(unsigned long magic, unsigned long addr)
 {
@@ -61,8 +63,19 @@ void kernel_main(unsigned long magic, unsigned long addr)
     debugString("Display initialized.\n");
     debugString("Kernel initialization complete!\n");
 
-    printf("Hello World!\n");
+    displayDiagnostics();
+    test();
+}
 
+void displayDiagnostics()
+{
+    printf("Welcome to CKOS!\n----------------\n");
+    printf("Display Info:\nH: %d W: %d L: %d", screenHeight, screenWidth, scanline);
+    printf("\n----------------\n\n");
+}
+
+void test()
+{
     const char* src = "Hello World2!\n";
     char dst[15];
     memset(dst, '\0', 15);
