@@ -4,7 +4,7 @@
 
 #include "multiboot2.h"
 #include "debug.h"
-#include "terminal.h"
+#include "stdio.h"
 
 extern void loadPageDirectory(unsigned int*);
 extern void enablePaging();
@@ -36,9 +36,9 @@ void kernel_main(unsigned long magic, unsigned long addr)
     }
     debugString("Bootloader validated.\n");
 
-    loadPageDirectory(page_directory);
-    enablePaging();
-    debugString("Paging loaded.\n");
+    //loadPageDirectory(page_directory);
+    //enablePaging();
+    //debugString("Paging loaded.\n");
 
     multiboot_tag_t *tag;
     for (tag = (multiboot_tag_t *)(addr + 8);
@@ -61,7 +61,14 @@ void kernel_main(unsigned long magic, unsigned long addr)
     debugString("Display initialized.\n");
     debugString("Kernel initialization complete!\n");
 
-    printk("Hello World!\n");
-    printk("Hello World!\n");
-    printk("Hello World!\n");
+    printf("Hello World!\n");
+
+    const char* src = "Hello World2!\n";
+    char dst[15];
+
+    char* final = strncpy(dst, src, 7);
+    printf(final);
+    printf("\n");
+
+    printf("Number is: %d!\n", 123);
 }

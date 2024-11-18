@@ -18,6 +18,7 @@ void putchar(
     unsigned short int c, // This is an int not a char since it's a unicode character
     unsigned int cursorX,
     unsigned int cursorY);
-void printk(const char* s);
+int printStr(const char* s);
+void printChar(char c);
 
 #endif
