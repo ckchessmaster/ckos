@@ -65,6 +65,7 @@ void kernel_main(unsigned long magic, unsigned long addr)
     debugString("Display initialized.\n");
     debugString("Kernel initialization complete!\n");
 
+    cls();
     displayDiagnostics();
     test();
 }

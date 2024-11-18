@@ -24,5 +24,6 @@ void putchar(
     unsigned int cursorY);
 int printStr(const char* s);
 void printChar(char c);
+void cls();
 
 #endif

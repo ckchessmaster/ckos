@@ -118,3 +118,14 @@ void printChar(char c)
         cursorY++;
     }
 }
+
+void cls()
+{
+    for (unsigned int i=0; i<(_screenHeight * _scanline); i++)
+    {
+        framebuffer[i] = 0;
+    }
+
+    cursorX = 0;
+    cursorY = 0;
+}
