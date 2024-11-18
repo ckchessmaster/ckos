@@ -18,13 +18,28 @@ int printf(const char *format, ...)
 
         if (*c == '%')
         {
+            skip = true;
             switch (*(c + 1))
             {
+            case 'i':
             case 'd':
             {
                 char num[11];
+                memset(num, '\0', 11);
                 intToString(va_arg(params, int), num);
                 printStr(num);
+                skip = true;
+            }
+            break;
+            case 'c':
+            {
+                printChar((char)va_arg(params, int));
+                skip = true;
+            }
+            break;
+            case 's':
+            {
+                printStr(va_arg(params, char*));
                 skip = true;
             }
             break;
@@ -32,6 +47,7 @@ int printf(const char *format, ...)
             {
                 printChar(*c);
                 len++;
+                skip = false;
             }
             break;
             }

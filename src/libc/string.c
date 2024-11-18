@@ -1,5 +1,18 @@
 #include "string.h"
 
+void* memset(void *str, int c, size_t n)
+{
+    unsigned char fillByte = (unsigned char)c;
+    unsigned char* temp=str;
+    for (size_t i=0; i<n; i++)
+    {
+        temp[i] = fillByte;
+        temp++;
+    }
+
+    return str;
+}
+
 size_t strlen(const char* str)
 {
     size_t length = 0;
