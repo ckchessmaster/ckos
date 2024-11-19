@@ -16,7 +16,6 @@ unsigned int screenHeight;
 unsigned int screenWidth;
 
 void kernel_main(unsigned long magic, unsigned long addr);
-void displayDiagnostics();
 void test();
 
 void kernel_main(unsigned long magic, unsigned long addr)
@@ -38,9 +37,9 @@ void kernel_main(unsigned long magic, unsigned long addr)
     }
     debugString("Bootloader validated.\n");
 
-    //loadPageDirectory(page_directory);
-    //enablePaging();
-    //debugString("Paging loaded.\n");
+    loadPageDirectory(page_directory);
+    enablePaging();
+    debugString("Paging loaded.\n");
 
     multiboot_tag_t *tag;
     for (tag = (multiboot_tag_t *)(addr + 8);
@@ -51,13 +50,9 @@ void kernel_main(unsigned long magic, unsigned long addr)
         {
             case MULTIBOOT_TAG_TYPE_FRAMEBUFFER:
             {
-                multiboot_tag_framebuffer_t *tagfb = (multiboot_tag_framebuffer_t *)tag;
-                framebuffer = tagfb->framebuffer_addr;
-                scanline = tagfb->framebuffer_pitch;
-                screenHeight = tagfb->framebuffer_height;
-                screenWidth = tagfb->framebuffer_height;
+                multiboot_tag_framebuffer_t* fbTag = (multiboot_tag_framebuffer_t*)tag;
 
-                initTerminal(framebuffer, screenHeight, screenWidth, scanline);
+                initTerminal(fbTag);
             }
             break;
         }
@@ -66,16 +61,12 @@ void kernel_main(unsigned long magic, unsigned long addr)
     debugString("Kernel initialization complete!\n");
 
     cls();
+    printf("Welcome to CKOS!\n--------------------------------\n");
     displayDiagnostics();
     test();
 }
 
-void displayDiagnostics()
-{
-    printf("Welcome to CKOS!\n--------------------------------\n");
-    printf("Display Info:\nH: %d W: %d L: %d", screenHeight, screenWidth, scanline);
-    printf("\n--------------------------------\n\n");
-}
+
 
 void test()
 {
@@ -94,7 +85,7 @@ void test()
 
     printf("Number is: %d! Next number is: %d!\n", 123, 456);
 
-    for (int i=0; i<120; i++)
+    for (int i=0; i<128; i++)
     {
         printf("X");
     }

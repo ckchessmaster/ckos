@@ -7,7 +7,12 @@
 #define PSF1_FONT_MAGIC 0x0436
 #define PSF2_FONT_MAGIC 0x864ab572
 
-#define FONT_COLOR 0x00FF00 // Green
+
+#define RED 0xFF0000
+#define GREEN 0x00FF00
+#define BLUE 0x0000FF
+
+#define FONT_COLOR GREEN
 
 typedef struct PSF1_Header {
     uint16_t magic;

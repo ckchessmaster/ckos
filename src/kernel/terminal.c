@@ -2,7 +2,7 @@
 
 extern char _binary_font_psf_start[];
 
-extern char *framebuffer;
+char* _framebuffer;
 unsigned int _scanline; // Bytes per line (could be more than screen width)
 
 unsigned int _screenHeight;
@@ -18,19 +18,18 @@ unicode_lookup_t unicodeMap[] =
 unsigned int cursorX = 0;
 unsigned int cursorY = 0;
 
-void initTerminal(
-    uint64_t framebufferAddress,
-    unsigned int screenHeight,
-    unsigned int screenWidth,
-    unsigned int scanline)
+void drawScreenBorder();
+
+void initTerminal(multiboot_tag_framebuffer_t* tag)
 {
-    _scanline = scanline;
-    _screenHeight = screenHeight;
-    _screenWidth = screenWidth;
+    _scanline = tag->framebuffer_pitch;
+    _screenHeight = tag->framebuffer_height;
+    _screenWidth = tag->framebuffer_width;
+    _framebuffer = (char*)(uintptr_t)tag->framebuffer_addr;
 
     // cast the address to PSF header struct
     PSF2_Font_t *font = (PSF2_Font_t *)&_binary_font_psf_start;
-    _charactersPerLine = _screenWidth / (font->width - 1);
+    _charactersPerLine = (1024 / (font->width + 1));
     _maxLines = _screenHeight / font->height;
 }
 
@@ -42,13 +41,11 @@ void putchar(
     // cast the address to PSF header struct
     PSF2_Font_t *font = (PSF2_Font_t *)&_binary_font_psf_start;
 
-    unsigned int bytesPerLine = (font->width + 7) / 8;
-
     // Get the glyph for the given character. If there's no glyph we'll display the first glyph.
     unsigned char *glyph = (unsigned char *)&_binary_font_psf_start + font->headerSize + (c > 0 && c < font->numGlyphs ? c : 0) * font->bytesPerGlyph;
 
-    // Calculate the upper left corner of the screen.
-    unsigned int offset = (cY * font->height * _scanline) + (cX * (font->width + 1) * sizeof(PIXEL));
+    unsigned int bytesPerLine = (font->width + 7) / 8;
+    unsigned int offset = (cY * font->height * (_scanline)) + (cX * (font->width + 1) * sizeof(PIXEL)) + (sizeof(PIXEL) * 4) + (_scanline * 4);
 
     // Display pixels according to the bitmap
     unsigned int x, y, line, mask;
@@ -59,7 +56,7 @@ void putchar(
 
         for (x = 0; x < font->width; x++)
         {
-            *((PIXEL *)(framebuffer + line)) = *((unsigned int *)glyph) & mask ? FONT_COLOR : 0;
+            *((PIXEL *)(_framebuffer + line)) = *((unsigned int *)glyph) & mask ? FONT_COLOR : 0;
             mask >>= 1;
             line += sizeof(PIXEL);
         }
@@ -110,7 +107,6 @@ void printChar(char c)
     putchar(getUnicodeValueFromChar(c), cursorX, cursorY);
     cursorX++;
 
-    // TODO: Get the proper screen width. Current version doesn't quite go to the edge
     // TODO: Implement screen scrolling
     if (cursorX >= _charactersPerLine)
     {
@@ -123,9 +119,46 @@ void cls()
 {
     for (unsigned int i=0; i<(_screenHeight * _scanline); i++)
     {
-        framebuffer[i] = 0;
+        _framebuffer[i] = 0;
     }
 
     cursorX = 0;
     cursorY = 0;
+    drawScreenBorder();
+}
+
+void drawScreenBorder()
+{
+    // Top
+    for (unsigned int i=0; i<_screenWidth; i++)
+    {
+        *((PIXEL *)_framebuffer + i + _screenWidth) = RED;
+    }
+
+    // Bottom
+    for (unsigned int i=0; i<_screenWidth; i++)
+    {
+        *((PIXEL *)_framebuffer + i + ((_screenHeight - 2) * _screenWidth)) = RED;
+    }
+
+    // // Left
+    for (unsigned int i=0; i<_screenHeight; i++)
+    {
+        *((PIXEL *)_framebuffer + 1 + (_screenWidth * i)) = RED;
+    }
+
+    // Right
+    for (unsigned int i=0; i<_screenHeight; i++)
+    {
+        *((PIXEL *)_framebuffer + 1023 - 1 + (1024 * i)) = RED;
+    }
+}
+
+void displayDiagnostics()
+{
+    PSF2_Font_t *font = (PSF2_Font_t *)&_binary_font_psf_start;
+
+    printf("Display Info:\nH: %d W: %d B: %d CPL: %d\n", _screenHeight, _screenWidth, _scanline, _charactersPerLine);
+    printf("Font Info: Characters: %d H: %d W: %d\n", font->numGlyphs, font->height, font->width);
+    printf("--------------------------------\n\n");
 }
