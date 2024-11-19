@@ -12,7 +12,6 @@ LDFLAGS := -ffreestanding -O2 -nostdlib
 SRC 	:= src
 BUILD 	:= build
 OBJ     := $(BUILD)/obj
-TST		:= $(BUILD)/test
 INCLUDES:= $(wildcard $(SRC)/**/include)
 BIN     := $(BUILD)/bin
 KERNEL  := $(BIN)/kernel.bin
@@ -26,6 +25,7 @@ OBJS	:= $(OBJS) $(OBJ)/external/font.o
 
 DEPS	:= $(patsubst $(SRC)/%.c, $(OBJ)/%.d, $(SRCS))
 DEPS	:= $(patsubst $(SRC)/%.S, $(OBJ)/%.d, $(DEPS))
+
 
 HEADERS	:= $(foreach incl, $(INCLUDES), $(wildcard $(incl)/*.h))
 ALLFILES:= $(SRCS) $(HEADERS)
@@ -48,6 +48,7 @@ setup:
 	@mkdir -p build/bin
 	@mkdir -p build/release
 	@mkdir -p build/iso/boot/grub
+	@mkdir -p build/test
 
 clean:
 	-@rm -R build/*
@@ -75,7 +76,3 @@ $(OBJ)/%.o: $(SRC)/%.S
 # Build special content
 $(OBJ)/external/font.o: font.psf
 	@objcopy -O elf32-i386 -B i386 -I binary $< $@
-
-# Test
-$(TST)/%_t: %.c Makefile $(RELEASE)
-	@$(CC) $(CFLAGS) -MMD -MP -DTEST $< $(RELEASE) -o $@
