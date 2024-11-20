@@ -8,5 +8,6 @@
 #include "terminal.h"
 
 int printf(const char* format, ...);
+//int putchar(int c);
 
 #endif

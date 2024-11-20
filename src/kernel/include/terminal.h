@@ -16,10 +16,7 @@ typedef struct unicode_lookup
 
 void initTerminal(multiboot_tag_framebuffer_t* tag);
 unsigned short int getUnicodeValueFromChar(char c);
-void putchar(
-    unsigned short int c, // This is an int not a char since it's a unicode character
-    unsigned int cursorX,
-    unsigned int cursorY);
+
 int printStr(const char* s);
 void printChar(char c);
 void cls();

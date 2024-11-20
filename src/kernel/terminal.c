@@ -33,39 +33,6 @@ void initTerminal(multiboot_tag_framebuffer_t* tag)
     _maxLines = _screenHeight / font->height;
 }
 
-void putchar(
-    unsigned short int c, // This is an int not a char since it's a unicode character
-    unsigned int cX,
-    unsigned int cY)
-{
-    // cast the address to PSF header struct
-    PSF2_Font_t *font = (PSF2_Font_t *)&_binary_font_psf_start;
-
-    // Get the glyph for the given character. If there's no glyph we'll display the first glyph.
-    unsigned char *glyph = (unsigned char *)&_binary_font_psf_start + font->headerSize + (c > 0 && c < font->numGlyphs ? c : 0) * font->bytesPerGlyph;
-
-    unsigned int bytesPerLine = (font->width + 7) / 8;
-    unsigned int offset = (cY * font->height * (_scanline)) + (cX * (font->width + 1) * sizeof(PIXEL)) + (sizeof(PIXEL) * 4) + (_scanline * 4);
-
-    // Display pixels according to the bitmap
-    unsigned int x, y, line, mask;
-    for (y = 0; y < font->height; y++)
-    {
-        line = offset;
-        mask = 1 << (font->width - 1);
-
-        for (x = 0; x < font->width; x++)
-        {
-            *((PIXEL *)(_framebuffer + line)) = *((unsigned int *)glyph) & mask ? FONT_COLOR : 0;
-            mask >>= 1;
-            line += sizeof(PIXEL);
-        }
-
-        glyph += bytesPerLine;
-        offset += _scanline;
-    }
-}
-
 unsigned short int getUnicodeValueFromChar(char c)
 {
     unsigned short int value = UNICODE_UNKNOWN;
@@ -104,7 +71,33 @@ void printChar(char c)
         return;
     }
 
-    putchar(getUnicodeValueFromChar(c), cursorX, cursorY);
+    // cast the address to PSF header struct
+    PSF2_Font_t *font = (PSF2_Font_t *)&_binary_font_psf_start;
+
+    // Get the glyph for the given character. If there's no glyph we'll display the first glyph.
+    unsigned int u = getUnicodeValueFromChar(c);
+    unsigned char *glyph = (unsigned char *)&_binary_font_psf_start + font->headerSize + (u > 0 && u < font->numGlyphs ? u : 0) * font->bytesPerGlyph;
+
+    unsigned int bytesPerLine = (font->width + 7) / 8;
+    unsigned int offset = (cursorY * font->height * (_scanline)) + (cursorX * (font->width + 1) * sizeof(PIXEL)) + (sizeof(PIXEL) * 4) + (_scanline * 4);
+
+    // Display pixels according to the bitmap
+    unsigned int x, y, line, mask;
+    for (y = 0; y < font->height; y++)
+    {
+        line = offset;
+        mask = 1 << (font->width - 1);
+
+        for (x = 0; x < font->width; x++)
+        {
+            *((PIXEL *)(_framebuffer + line)) = *((unsigned int *)glyph) & mask ? FONT_COLOR : 0;
+            mask >>= 1;
+            line += sizeof(PIXEL);
+        }
+
+        glyph += bytesPerLine;
+        offset += _scanline;
+    }
     cursorX++;
 
     // TODO: Implement screen scrolling

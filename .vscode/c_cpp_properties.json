@@ -31,7 +31,9 @@
                 "-Wno-long-long",
                 "-Wconversion",
                 "-Wstrict-prototypes",
-                "-Werror"
+                "-Werror",
+                "-DUNITY_EXCLUDE_SETJMP_H",
+                "-DUNITY_EXCLUDE_MATH_H"
             ]
         }
     ],
