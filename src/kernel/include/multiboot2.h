@@ -15,12 +15,36 @@ typedef struct multiboot_tag
     uint32_t size;
 } multiboot_tag_t;
 
-typedef struct multiboot_multiboot_tag_framebuffer_palette
+typedef struct multiboot_tag_memory_map_entry
+{
+    uint64_t base_addr;
+    uint64_t length;
+
+    /*  0 - Reserved memory
+        1 - available RAM
+        3 - usable RAM holding ACPI info
+        4 - Reserved memory which must be preserved on hibernation
+        5 - Defective RAM */
+    uint32_t type;      
+    uint32_t reserved;
+} multiboot_tag_memory_map_entry_t;
+
+typedef struct multiboot_tag_memory_map
+{
+    uint32_t type; // Always 6
+    uint32_t size;
+
+    uint32_t entry_size;    // Size of one entry. Guaranteed to be a multiple of 8. 
+    uint32_t entry_version; // Set to 0, future versions may increment this field.
+    multiboot_tag_memory_map_entry_t entries[];
+} multiboot_tag_memory_map_t;
+
+typedef struct multiboot_tag_framebuffer_palette
 {
     uint8_t red_value;
     uint8_t green_value;
     uint8_t blue_value;
-} multiboot_multiboot_tag_framebuffer_palette_t;
+} multiboot_tag_framebuffer_palette_t;
 
 typedef struct multiboot_tag_framebuffer
 {
@@ -44,7 +68,7 @@ typedef struct multiboot_tag_framebuffer
         struct
         {
             uint16_t framebuffer_pallete_num_colors;
-            multiboot_multiboot_tag_framebuffer_palette_t framebuffer_pallete[];
+            multiboot_tag_framebuffer_palette_t framebuffer_pallete[];
         };
         struct
         {
