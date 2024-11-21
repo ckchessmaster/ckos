@@ -12,6 +12,6 @@ char* strcpy(char* dest, const char* src);
 
 // Helper functions
 char digitToChar(int digit);
-unsigned int intToString(int i, char* string); // Returns the number of digits
+unsigned int intToString(int i, char* outString); // Returns the number of digits
 
 #endif

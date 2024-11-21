@@ -51,7 +51,7 @@ char* strcpy(char* dest, const char* src)
     return strncpy(dest, src, srcLength);
 }
 
-unsigned int intToString(int value, char* string)
+unsigned int intToString(int value, char* outString)
 {
     bool isNegative = value < 0;
     unsigned int numDigits = 0;
@@ -60,7 +60,8 @@ unsigned int intToString(int value, char* string)
     if (isNegative)
     {
         value = value * -1;
-        string[0] = '-';
+        outString[0] = '-';
+        numDigits++;
     }
 
     int modVal = 1000000000;
@@ -78,13 +79,19 @@ unsigned int intToString(int value, char* string)
                 startFound = true;
             }
 
-            string[stringIndex] = digitToChar(digit);
+            outString[stringIndex] = digitToChar(digit);
             stringIndex++;
             numDigits++;
         }        
 
         modVal = modVal / 10;
         divide = divide / 10;
+    }
+
+    if (!startFound)
+    {
+        outString[0] = '0';
+        numDigits++;
     }
 
     return numDigits;
