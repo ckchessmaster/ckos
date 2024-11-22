@@ -21,5 +21,6 @@ int printStr(const char* s);
 void printChar(char c);
 void cls();
 void displayDiagnostics();
+void displayTest();
 
 #endif

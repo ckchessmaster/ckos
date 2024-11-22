@@ -2,13 +2,10 @@
 #include <stddef.h>
 #include <stdint.h>
 
-#include "multiboot2.h"
 #include "debug.h"
+#include "memory32.h"
+#include "multiboot2.h"
 #include "stdio.h"
-
-extern void loadPageDirectory(unsigned int*);
-extern void enablePaging();
-extern unsigned int* page_directory;
 
 uint64_t framebuffer;
 unsigned int scanline;
@@ -37,9 +34,8 @@ void kernel_main(unsigned long magic, unsigned long addr)
     }
     debugString("Bootloader validated.\n");
 
-    loadPageDirectory(page_directory);
-    enablePaging();
-    debugString("Paging loaded.\n");
+    initMemory();
+    debugString("Memory initialized.\n");
 
     multiboot_tag_t *tag;
     for (tag = (multiboot_tag_t *)(addr + 8);
@@ -63,30 +59,6 @@ void kernel_main(unsigned long magic, unsigned long addr)
     cls();
     printf("Welcome to CKOS!\n--------------------------------\n");
     displayDiagnostics();
-    test();
-}
-
-
-
-void test()
-{
-    const char* src = "Hello World2!\n";
-    char dst[15];
-    memset(dst, '\0', 15);
-
-    char* final = strncpy(dst, src, 7);
-    printf(final);
-    printf("\n");
-
-    printf("Letter is %c!\n", 'A');
-    printf("String is %s!\n", "cat");
-    printf("Number is: %d!\n", 123);
-    printf("Number is: %i!\n", 4567890);
-
-    printf("Number is: %d! Next number is: %d!\n", 123, 456);
-
-    for (int i=0; i<128; i++)
-    {
-        printf("X");
-    }
+    //displayTest();
+    allocatePages(1);
 }

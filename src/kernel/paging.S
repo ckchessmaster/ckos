@@ -1,7 +1,12 @@
-.align 4
+.align 4096
 .global page_directory
 page_directory:
-	.skip 4
+	.skip 4096
+
+.align 4096
+.global page_table_1
+page_table_1:
+	.skip 4096
 
 .text
 .global loadPageDirectory

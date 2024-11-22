@@ -2,6 +2,8 @@
     "files.associations": {
         "stdbool.h": "c",
         "font.h": "c",
-        "io.h": "c"
-    }
+        "io.h": "c",
+        "memory.h": "c"
+    },
+    "cmake.ignoreCMakeListsMissing": true
 }

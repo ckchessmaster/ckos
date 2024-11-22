@@ -155,3 +155,26 @@ void displayDiagnostics()
     printf("Font Info: Characters: %d H: %d W: %d\n", font->numGlyphs, font->height, font->width);
     printf("--------------------------------\n\n");
 }
+
+void displayTest()
+{
+    const char* src = "Hello World2!\n";
+    char dst[15];
+    memset(dst, '\0', 15);
+
+    char* final = strncpy(dst, src, 7);
+    printf(final);
+    printf("\n");
+
+    printf("Letter is %c!\n", 'A');
+    printf("String is %s!\n", "cat");
+    printf("Number is: %d!\n", 123);
+    printf("Number is: %i!\n", 4567890);
+
+    printf("Number is: %d! Next number is: %d!\n", 123, 456);
+
+    for (int i=0; i<128; i++)
+    {
+        printf("X");
+    }
+}
