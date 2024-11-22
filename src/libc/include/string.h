@@ -13,5 +13,7 @@ char* strcpy(char* dest, const char* src);
 // Helper functions
 char digitToChar(int digit);
 unsigned int intToString(int i, char* outString); // Returns the number of digits
+unsigned int int64ToString(long long int value, char* outString); // Returns the number of digits
+unsigned int uint64ToString(unsigned long long int value, char* outString);
 
 #endif

@@ -7,6 +7,7 @@
 #define MULTIBOOT2_BOOTLOADER_MAGIC 0x36d76289
 
 #define MULTIBOOT_TAG_TYPE_END 0
+#define MULTIBOOT_TAG_TYPE_MEMORY_MAP 6
 #define MULTIBOOT_TAG_TYPE_FRAMEBUFFER 8
 
 typedef struct multiboot_tag
@@ -20,11 +21,11 @@ typedef struct multiboot_tag_memory_map_entry
     uint64_t base_addr;
     uint64_t length;
 
-    /*  0 - Reserved memory
-        1 - available RAM
-        3 - usable RAM holding ACPI info
-        4 - Reserved memory which must be preserved on hibernation
-        5 - Defective RAM */
+#define MULTIBOOT_MEMORY_AVAILABLE        1
+#define MULTIBOOT_MEMORY_RESERVED         2
+#define MULTIBOOT_MEMORY_ACPI_RECLAIMABLE 3
+#define MULTIBOOT_MEMORY_NVS              4
+#define MULTIBOOT_MEMORY_BADRAM           5
     uint32_t type;      
     uint32_t reserved;
 } multiboot_tag_memory_map_entry_t;

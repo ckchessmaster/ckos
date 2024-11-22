@@ -97,6 +97,91 @@ unsigned int intToString(int value, char* outString)
     return numDigits;
 }
 
+unsigned int int64ToString(long long int value, char* outString)
+{
+    bool isNegative = value < 0;
+    unsigned int numDigits = 0;
+    
+    // Convert to positive so we can use mod properly
+    if (isNegative)
+    {
+        value = value * -1;
+        outString[0] = '-';
+        numDigits++;
+    }
+
+    //                     9223372036854775807 // Max int64
+    long long int modVal = 1000000000000000000;
+    long long int divide = 100000000000000000;
+    int stringIndex = isNegative ? 1 : 0;
+    bool startFound = false;
+
+    for (short int i=0; i<18; i++)
+    {
+        int digit = (value % modVal) / divide;
+        if (startFound || digit != 0)
+        {
+            if (!startFound)
+            {
+                startFound = true;
+            }
+
+            outString[stringIndex] = digitToChar(digit);
+            stringIndex++;
+            numDigits++;
+        }        
+
+        modVal = modVal / 10;
+        divide = divide / 10;
+    }
+
+    if (!startFound)
+    {
+        outString[0] = '0';
+        numDigits++;
+    }
+
+    return numDigits;
+}
+
+unsigned int uint64ToString(unsigned long long int value, char* outString)
+{
+    unsigned int numDigits = 0;
+
+    //                              9223372036854775807 // Max int64
+    unsigned long long int modVal = 1000000000000000000;
+    unsigned long long int divide = 100000000000000000;
+    int stringIndex = 0;
+    bool startFound = false;
+
+    for (short int i=0; i<18; i++)
+    {
+        int digit = (value % modVal) / divide;
+        if (startFound || digit != 0)
+        {
+            if (!startFound)
+            {
+                startFound = true;
+            }
+
+            outString[stringIndex] = digitToChar(digit);
+            stringIndex++;
+            numDigits++;
+        }        
+
+        modVal = modVal / 10;
+        divide = divide / 10;
+    }
+
+    if (!startFound)
+    {
+        outString[0] = '0';
+        numDigits++;
+    }
+
+    return numDigits;
+}
+
 char digitToChar(int digit)
 {
     switch (digit)

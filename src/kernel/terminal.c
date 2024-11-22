@@ -158,6 +158,7 @@ void displayDiagnostics()
 
 void displayTest()
 {
+    printf("Begin display test\n-------------------------------------\n");
     const char* src = "Hello World2!\n";
     char dst[15];
     memset(dst, '\0', 15);
@@ -166,15 +167,35 @@ void displayTest()
     printf(final);
     printf("\n");
 
-    printf("Letter is %c!\n", 'A');
+    printf("Char is %c!\n", 'A');
     printf("String is %s!\n", "cat");
-    printf("Number is: %d!\n", 123);
-    printf("Number is: %i!\n", 4567890);
+    printf("Positive Number is: %d!\n", 123);
+    printf("Negative Number: %i!\n", -4567);
 
-    printf("Number is: %d! Next number is: %d!\n", 123, 456);
+    // TODO: Workaround until proper long long support is added for printf
+    char longlong[19];
+    memset(longlong, '\0', 19);
+    int64ToString(123456789000, longlong);
+    printf("LongLong is: %s!\n", longlong);
 
+    char longlong2[19];
+    memset(longlong2, '\0', 19);
+    int64ToString(-123456789000, longlong2);
+    printf("Negative LongLong is: %s!\n", longlong2);
+
+    unsigned long long test = 123456789123;
+    char longlong3[18];
+    memset(longlong3, '\0', 19);
+    uint64ToString(test, longlong3);
+    printf("Unsigned LongLong is: %s!\n", longlong3);
+
+    printf("Number 1: %d! Number 2: %d!\n", 123, 456);
+
+    printf("\nScreen wrap test:\n");
     for (int i=0; i<128; i++)
     {
         printf("X");
     }
+
+    printf("\n\nEnd display test\n-------------------------------------\n\n");
 }

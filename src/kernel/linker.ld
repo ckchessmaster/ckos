@@ -4,6 +4,7 @@ SECTIONS
 {
 	/* Start offset */
 	. = 2M;
+	_startKernel = .;
 
 	.text BLOCK(4K) : ALIGN(4K)
 	{
@@ -28,6 +29,7 @@ SECTIONS
 	{
 		*(COMMON)
 		*(.bss .bss.*)
+		_endKernel = .;
 	}
 
 	/* The compiler may produce other sections, by default it will put them in

@@ -34,9 +34,6 @@ void kernel_main(unsigned long magic, unsigned long addr)
     }
     debugString("Bootloader validated.\n");
 
-    initMemory();
-    debugString("Memory initialized.\n");
-
     multiboot_tag_t *tag;
     for (tag = (multiboot_tag_t *)(addr + 8);
          tag->type != MULTIBOOT_TAG_TYPE_END;
@@ -49,16 +46,23 @@ void kernel_main(unsigned long magic, unsigned long addr)
                 multiboot_tag_framebuffer_t* fbTag = (multiboot_tag_framebuffer_t*)tag;
 
                 initTerminal(fbTag);
+                debugString("Display initialized.\n");
+            }
+            break;
+            case MULTIBOOT_TAG_TYPE_MEMORY_MAP:
+            {
+                multiboot_tag_memory_map_t* mmTag = (multiboot_tag_memory_map_t*)tag;
+                initMemory(mmTag);
+                debugString("Memory initialized.\n");
             }
             break;
         }
     }
-    debugString("Display initialized.\n");
     debugString("Kernel initialization complete!\n");
 
     cls();
     printf("Welcome to CKOS!\n--------------------------------\n");
     displayDiagnostics();
-    //displayTest();
-    allocatePages(1);
+    memoryDiagnostics();
+    displayTest();
 }

@@ -3,6 +3,8 @@
 
 #include <stdint.h>
 
+#include "multiboot2.h"
+
 #define DIRECTORY_LENGTH 1024
 #define TABLE_ENTRY_SIZE 4096
 #define TABLE_LENGTH 1024
@@ -52,7 +54,8 @@ typedef uint32_t page_directory_entry_4MB;
 // 12-31 - Bits 31-12 of address
 typedef uint32_t page_directory_table_entry;
 
-void initMemory();
+void initMemory(multiboot_tag_memory_map_t* memoryMap);
 void allocatePages(unsigned int n);
+void memoryDiagnostics();
 
 #endif

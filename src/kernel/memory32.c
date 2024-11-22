@@ -6,8 +6,21 @@ extern void enablePaging();
 extern page_directory_entry page_directory[1024];
 extern page_directory_table_entry page_table_1[1024];
 
-void initMemory()
+uint64_t availableMemory = 0;
+
+void initMemory(multiboot_tag_memory_map_t* memoryMap)
 {
+    unsigned int numEntries = (memoryMap->size - 16) / memoryMap->entry_size;
+    for (unsigned int i=0; i<numEntries - 1; i++)
+    {
+        multiboot_tag_memory_map_entry_t mapEntry = memoryMap->entries[i];
+        
+        if (mapEntry.type == MULTIBOOT_MEMORY_AVAILABLE)
+        {
+            availableMemory += mapEntry.length;
+        }
+    }
+
     // Blank out all of the entries
     for (unsigned int i=0; i<DIRECTORY_LENGTH; i++)
     {
@@ -42,6 +55,18 @@ void initMemory()
 
 void allocatePages(unsigned int n)
 {
-    printf("Page directory: %d\n", page_directory[0]);
-    printf("Page table: %d\n", page_table_1[0]);
+    
+}
+
+void memoryDiagnostics()
+{
+    printf("Memory info:\n");
+    char ulonglong[19];
+    memset(ulonglong, '\0', 19);
+    uint64ToString(availableMemory, ulonglong);
+    printf("Available Memory: %s bytes\n", ulonglong);
+
+    printf("Page directory: %d Page table: %d\n", page_directory[0], page_table_1[0]);
+
+    printf("--------------------------------\n\n");
 }
