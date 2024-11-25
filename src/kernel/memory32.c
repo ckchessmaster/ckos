@@ -63,11 +63,10 @@ void initMemory(multiboot_tag_memory_map_t* memoryMap)
     }
     // 3. Reserve the memory block used for the memory map
     current = mm;
-    unsigned int i=0;
     while (current)
     {
         // If we found it create a new node in the list
-        if (current->address == mm)
+        if (current->address == (uint64_t)(uintptr_t)mm)
         {
             // Create new node
             newNode->previous = current;
@@ -150,12 +149,12 @@ void memoryDiagnostics()
     unsigned int i=0;
     while (current)
     {
-        // TODO: There may be an issue with the calculation here for the last entry
+        // TODO: For some reason the last address ends up being greater than the max memory
         char length_s[19];
         memset(length_s, '\0', 19);
         uint64_t length = current->next 
             ? (current->next->address - current->address) / 1024 
-            : (totalMemory - current->address) / 1024;
+            : totalMemory > current->address ? (totalMemory - current->address) / 1024 : 0;
         uint64ToString(length, length_s);
 
         char addr[19];
