@@ -118,7 +118,7 @@ unsigned int int64ToString(long long int value, char* outString)
 
     for (short int i=0; i<18; i++)
     {
-        int digit = (value % modVal) / divide;
+        int digit = (int)((value % modVal) / divide);
         if (startFound || digit != 0)
         {
             if (!startFound)
@@ -156,7 +156,7 @@ unsigned int uint64ToString(unsigned long long int value, char* outString)
 
     for (short int i=0; i<18; i++)
     {
-        int digit = (value % modVal) / divide;
+        int digit = (int)((value % modVal) / divide);
         if (startFound || digit != 0)
         {
             if (!startFound)

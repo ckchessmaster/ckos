@@ -100,14 +100,14 @@ $(KERNEL): $(OBJS)
 	@$(CC) -T $(SRC)/kernel/linker.ld -o $(KERNEL) $(LDFLAGS) $(OBJS) -lgcc
 
 # Build
-$(OBJ)/%.o: $(SRC)/%.c Makefile
+$(OBJ)/%.o: $(SRC)/%.c Makefile $(SRC)/kernel/linker.ld
 	@$(CC) $(CFLAGS) $(foreach incl, $(INCLUDES), $(addprefix -I ,$(incl))) -MMD -MP -c $< -o $@
 
-$(OBJ)/%.o: $(SRC)/%.S
+$(OBJ)/%.o: $(SRC)/%.S Makefile $(SRC)/kernel/linker.ld
 	@$(AS) $< -o $@
 
 # Build special content
-$(OBJ)/external/font.o: font.psf
+$(OBJ)/external/font.o: font.psf Makefile $(SRC)/kernel/linker.ld
 	@objcopy -O elf32-i386 -B i386 -I binary $< $@
 
 # Tests-----------------------------------------------------------------------------------------------------
@@ -120,17 +120,17 @@ $(TST_BIN)/test-runner.bin: $(TST_OBJS)
 	@$(TST_CC) $(TST_LDFLAGS) -o $(TST_BIN)/test-runner.bin $(TST_OBJS)
 
 # Create obj files from tests
-$(TST_OBJ)/%.o: $(TST_SRC)/%.c Makefile
+$(TST_OBJ)/%.o: $(TST_SRC)/%.c Makefile $(SRC)/kernel/linker.ld
 	$(TST_CC) $(TST_CFLAGS) $(foreach incl, $(TST_INCLUDES), $(addprefix -I,$(incl))) -c $< -o $@
 
 # Create obj files from src
-$(TST_OBJ)/%.o: $(SRC)/%.c Makefile
+$(TST_OBJ)/%.o: $(SRC)/%.c Makefile $(SRC)/kernel/linker.ld
 	$(TST_CC) $(TST_CFLAGS) $(foreach incl, $(TST_INCLUDES), $(addprefix -I,$(incl))) -c $< -o $@
 
 # Font obj
-$(TST_OBJ)/external/font.o: font.psf Makefile
+$(TST_OBJ)/external/font.o: font.psf Makefile $(SRC)/kernel/linker.ld
 	@objcopy -O pe-x86-64 -B i386:x86-64 -I binary $< $@
 
 # Unity obj
-$(TST_OBJ)/unity.o: Unity/src/unity.c Makefile
+$(TST_OBJ)/unity.o: Unity/src/unity.c Makefile $(SRC)/kernel/linker.ld
 	$(TST_CC) $(TST_CFLAGS) $(foreach incl, $(TST_INCLUDES), $(addprefix -I,$(incl))) -c $< -o $@

@@ -54,8 +54,19 @@ typedef uint32_t page_directory_entry_4MB;
 // 12-31 - Bits 31-12 of address
 typedef uint32_t page_directory_table_entry;
 
+typedef struct memory_map_entry
+{
+    struct memory_map_entry* previous;
+    struct memory_map_entry* next;
+    uint64_t address;
+#define MEMORY_AVAILABLE 1          // Available memory
+#define MEMORY_USED 2               // In use by non-critical paths
+#define MEMORY_FIRMWARE_RESERVED 3  // In use by firmware, this can never be freed
+#define MEMORY_KERNEL_RESERVED 4    // In use by the kernel for critical paths, can only be freed by the kernel itself
+    uint8_t status;
+} memory_map_entry_t;
+
 void initMemory(multiboot_tag_memory_map_t* memoryMap);
-void allocatePages(unsigned int n);
 void memoryDiagnostics();
 
 #endif
